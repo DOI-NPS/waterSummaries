@@ -36,6 +36,7 @@ yr_start_lnetn <- 2006
 yr_current_lnetn <- 2024
 yr_prev_lnetn <- yr_current_lnetn - 1
 
+dp_name <- params$dbpath
 #park_list <- c("MIMA")
 
 child_env <- new.env()
@@ -49,6 +50,7 @@ child_env$yr_prev <- yr_prev
 child_env$yr_start_lnetn <- yr_start_lnetn
 child_env$yr_current_lnetn <- yr_current_lnetn
 child_env$yr_prev_lnetn <- yr_prev_lnetn
+child_env$dp_name <- dp_name
 
 child_env$lnetn_list <- c("MABI", "MIMA", "MORR", "ROVA", "SAGA", "SARA", "WEFA") 
 child_env$netn_list <- c("ACAD", "MABI", "MIMA", "MORR", "ROVA", "SAGA", "SARA", "WEFA")
@@ -72,16 +74,23 @@ Photo looking downstream of Blow-Me-Up Brook monitoring location in Saint-Gauden
 <br>
 <br>
 <br>
-```{r results = 'asis'}
-# Extract data package number
-dp_name <- params$dbpath
+
+```{r}
 db_rec1 <- sub(".*/|", "", dp_name)
 db_rec <- gsub(".*?([0-9]+).*", "\\1", db_rec1)
 
-cat(paste0("<p>Report genreated on ", format(Sys.Date(), "%B %d, %Y"), " using data package downloadable from: ",
-           paste0("<a href = 'https://irma.nps.gov/DataStore/Reference/Profile/", db_rec), "'",
-           ">https://irma.nps.gov/DataStore/Reference/Profile/", db_rec, "</a>."), "</p>
-    ")
+```
+```{r results = 'asis'}
+# Extract data package number
+if(db_rec != 2313941){
+cat(paste0("<p>Report generated on ", format(Sys.Date(), "%B %d, %Y"), " using data package downloadable from: ",
+           paste0("<a href = 'https://irma.nps.gov/DataStore/Reference/Profile/", paste0(db_rec)), "'",
+           ">https://irma.nps.gov/DataStore/Reference/Profile/", paste0(db_rec), "</a>."), "</p>")
+} else {
+  cat(paste0("<p>Report generated on ", format(Sys.Date(), "%B %d, %Y"), " using data package downloadable from: ",
+           paste0("<a href = 'https://irma.nps.gov/DataStore/Reference/Profile/2313941>'", 
+                  "https://irma.nps.gov/DataStore/Reference/Profile/2313941</a>.</p>")))
+}
 
 ```
 
