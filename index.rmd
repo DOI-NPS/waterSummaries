@@ -11,8 +11,8 @@ output:
 title: "NETN water summary"
 params:
   year_start: 2006 # first year of data
-  year_current: 2024 # current year of data
-  dppath: "./data/records-2313941.zip" # download from datastore and put in data folder
+  year_current: 2025 # current year of data
+  dbpath: "./data/records-2321225.zip" # download from datastore and put in data folder
 ---
 # {.tabset .tabset-pills}
 
@@ -40,7 +40,7 @@ dp_name <- params$dbpath
 #park_list <- c("MIMA")
 
 child_env <- new.env()
-importData(type = "zip", filepath = params$dppath)
+importData(type = "zip", filepath = dp_name)
 #importData()
 for(n in ls(VIEWS_WQ, all.names = TRUE)) assign(n, get(n, VIEWS_WQ), child_env)
 

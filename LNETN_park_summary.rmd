@@ -12,7 +12,7 @@ title: "NETN water summary"
 params:
   park: "MABI" # 4-letter park code
   year_start_lnetn: 2006 # first year of data
-  year_current_lnetn: 2024 # current year of data
+  year_current_lnetn: 2025 # current year of data
 ---
 
 ```{r include = FALSE}
@@ -40,7 +40,7 @@ yr_current <- 2024 #2024 # no 2025 data
 yr_prev <- yr_current - 1
 
 ```
-```{r results = 'hide', cache = T, eval = T}
+```{r results = 'hide', cache = T, eval = F}
 importData()
 ```
 
@@ -374,17 +374,17 @@ leaflet(height = 700) %>%
     setView(lng = long_cent,
             lat = lat_cent,
             zoom = bbox$Zoom[bbox$ParkCode == parkcode]) %>%
-    # setMaxBounds(lng1 = bbox[bbox$ParkCode == parkcode,]$LongE,
-    #              lng2 = bbox[bbox$ParkCode == parkcode,]$LongW,
-    #              lat1 = bbox[bbox$ParkCode == parkcode,]$LatN,
-    #              lat2 = bbox[bbox$ParkCode == parkcode,]$LatS) %>%
+    setMaxBounds(lng1 = bbox[bbox$ParkCode == parkcode,]$LongE,
+                 lng2 = bbox[bbox$ParkCode == parkcode,]$LongW,
+                 lat1 = bbox[bbox$ParkCode == parkcode,]$LatN,
+                 lat2 = bbox[bbox$ParkCode == parkcode,]$LatS) %>%
     # add map tiles
     addTiles(group = "NatGeo", urlTemplate = ESRINatGeo,
              options = providerTileOptions(minZoom = bbox$minZoom[bbox$ParkCode == parkcode])) %>%
     addTiles(group = "Imagery", urlTemplate = ESRIimagery) %>%
     addTiles(group = "Topo", urlTemplate = ESRItopo) %>%
     # add button to control map tiles
-    addLayersControl(map = ., baseGroups = c("Map","Imagery","Topo", "NatGeo"),
+    addLayersControl(map = ., baseGroups = c("NatGeo", "Imagery", "Topo"),
                      options = layersControlOptions(collapsed=T)) %>%
     # add site markers 
     addAwesomeMarkers(data = water_sites, ~SiteLongitude, ~SiteLatitude, 

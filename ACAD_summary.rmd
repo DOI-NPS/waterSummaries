@@ -12,7 +12,7 @@ title: "NETN water summary"
 params:
   park: ACAD # 4-letter park code
   year_start: 2006 # first year of data
-  year_current: 2024 # current year of data
+  year_current: 2025 # current year of data
 ---
 
 ```{r include = FALSE}
@@ -29,8 +29,8 @@ library(kableExtra)
 library(climateNETN)
 ```
 ```{r results = 'hide', cache = T, eval = T}
-try(importData(type = "zip", filepath = "../data/records-2313941.zip"))
-try(importData(type = "zip", filepath = "./data/records-2313941.zip"))
+try(importData(type = "zip", filepath = "../data/records-2321225.zip"))
+try(importData(type = "zip", filepath = "./data/records-2321225.zip"))
 ```
 
 
@@ -45,8 +45,9 @@ parkcode <- "ACAD" #child_env$park
 park = parkcode
 # try(yr_start <- params$year_start) # turn on if running rms
 # try(yr_current <- params$year_current) # turn on if running rmd
-# yr_start = 2006
-# yr_current = 2024
+yr_start = 2006
+yr_current = 2025
+year_current = params$year_current
 yr_prev <- yr_current - 1
 yr_4yr <- yr_current - 2
 site_df1 <- unique(getEvents(park = "ACAD", years = yr_4yr:yr_current)[, c("SiteCode", "SiteName", "UnitCode", "UnitName", "SiteType", "year")])
@@ -83,7 +84,7 @@ for(i in seq_along(lake_list)){
 
   lakecode <- lake_list[[i]]
   sitename <- unique(site_df$SiteName[site_df$SiteCode==lakecode])
-  sitecode <- unique(site_df$SiteCode[site_df$SiteCode==lakecode])
+  #sitecode <- unique(site_df$SiteCode[site_df$SiteCode==lakecode])
   yr_current <- site_df$year[site_df$SiteCode==lakecode]
   yr_prev <- yr_current - 1
   
@@ -92,7 +93,7 @@ for(i in seq_along(lake_list)){
   cat("\n\n")
   cat(paste0("<h1>Historic (", yr_start, " to ", yr_prev, ") vs. Current (", yr_current, ") Field Measurements</h1>\n\n"))
 
-  field_plot_fun(scode = sitecode, yrcurrent = yr_current, yrstart = yr_start, yrprev = yr_prev)
+  field_plot_fun(scode = lakecode, yrcurrent = yr_current, yrstart = yr_start, yrprev = yr_prev)
   
   cat(paste0(
   "<p>",
@@ -113,7 +114,7 @@ for(i in seq_along(lake_list)){
   
   cat(paste0("<h1>Historic (", yr_start, " to ", yr_prev, ") vs. Current (", yr_current, ") Lab Chemistry</h1>\n\n"))
 
-  lab_plot_fun(scode = sitecode, yrcurrent = yr_current, yrstart = yr_start, yrprev = yr_prev)
+  lab_plot_fun(scode = lakecode, yrcurrent = yr_current, yrstart = yr_start, yrprev = yr_prev)
   
   cat(paste0(
   "<p>",
@@ -135,7 +136,7 @@ for(i in seq_along(lake_list)){
   cat("\n\n")
   cat(paste0("<h1>Trends in Field Measurements (", yr_start, " to ", yr_current, ")</h1>\n\n"))
   cat("\n\n")
-  ptf <- plotTrend(site = sitecode, years = yr_start:yr_current, span = 0.9, 
+  ptf <- plotTrend(site = lakecode, years = yr_start:yr_current, span = 0.9, 
             parameter = field_params, palette = c("#5AA7D7"), legend_position = "bottom")
   
   print(ptf)
@@ -154,7 +155,7 @@ for(i in seq_along(lake_list)){
   cat("\n\n")
   cat(paste0("<h1>Trends in Lab Chemistry (", yr_start, " to ", yr_current, ")</h1>\n\n"))
   cat("\n\n")
-  ptl <- plotTrend(site = sitecode, years = yr_start:yr_current, span = 0.9, 
+  ptl <- plotTrend(site = lakecode, years = yr_start:yr_current, span = 0.9, 
             parameter = lab_params, palette = c("#5AA7D7"), legend_position = "bottom")
   print(ptl)
   cat("\n\n")
@@ -177,7 +178,7 @@ for(i in seq_along(lake_list)){
 for(i in seq_along(lake_list)){
   lakecode <- lake_list[[i]]
   sitename <- unique(site_df$SiteName[site_df$SiteCode==lakecode])
-  sitecode <- unique(site_df$SiteCode[site_df$SiteCode==lakecode])
+  #sitecode <- unique(site_df$SiteCode[site_df$SiteCode==lakecode])
   yr_current <- site_df$year[site_df$SiteCode==lakecode]
   yr_prev <- yr_current - 1
   
@@ -254,7 +255,7 @@ palette_rev <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
 param_df <- data.frame(param = param_list, param_name = param_name, pal = palette_list, rev = palette_rev)
 ```
 
-##### Summary of Current Year (`r yr_current`)
+##### Summary of Current Year (`r year_current`)
 
 ```{r results = 'asis', fig.height = 9, fig.width = 13}
 for(i in seq_along(param_list)){
@@ -278,8 +279,9 @@ for(i in seq_along(param_list)){
 
 ```{r results = 'asis', fig.height = 9, fig.width = 13}
 for(i in seq_along(lake_list)){
-  sitecode = lake_list[[i]]
-  cat("###### ", sitecode, "\n\n")
+  lakecode = lake_list[[i]]
+  sitename <- unique(site_df$SiteName[site_df$SiteCode==lakecode])
+  cat("###### ", sitename, "\n\n")
   for(j in seq_along(param_list)){
   param = param_df$param[[j]]
   pal = param_df$pal[param_df$param == param]
@@ -287,11 +289,11 @@ for(i in seq_along(lake_list)){
   param_name = param_df$param_name[param_df$param == param]
   
   cat(paste0("<details open><summary class = 'drop'>", param_name, "</summary>", "\n\n"))
-  sitename = site_df$SiteName[site_df$SiteCode==sitecode]
-  yr_current <- site_df$year[site_df$SiteCode==sitecode]
+  sitename = site_df$SiteName[site_df$SiteCode==lakecode]
+  yr_current <- site_df$year[site_df$SiteCode==lakecode]
 
   cat("\n\n")
-  prof_tplot <- plotLakeProfile(site = sitecode, years = yr_start:yr_current, parameter = param, 
+  prof_tplot <- plotLakeProfile(site = lakecode, years = yr_start:yr_current, parameter = param, 
                                 palette = pal, color_rev = rev)
   print(prof_tplot)
   cat("\n\n")
@@ -304,7 +306,7 @@ for(i in seq_along(lake_list)){
 
 #### Sampling History {.tabset}
 ```{r}
-samp_hist <- sumEvents(park = parkcode, site_type ='lake', years = yr_start:yr_current) |> 
+samp_hist <- sumEvents(park = parkcode, site_type ='lake', years = yr_start:year_current) |> 
   select(SiteName, param_type:Oct_cens) |> 
   arrange(SiteName, param_type, Parameter)
 
@@ -333,7 +335,7 @@ for(i in seq_along(stream_list)){
   streamcode <- stream_list[[i]]
 
   sitename <- site_df$SiteName[site_df$SiteCode==streamcode]
-  sitecode <- site_df$SiteCode[site_df$SiteCode==streamcode]
+  #sitecode <- site_df$SiteCode[site_df$SiteCode==streamcode]
   yr_current <- site_df$year[site_df$SiteCode==streamcode]
   yr_prev <- yr_current - 1
   
@@ -343,7 +345,7 @@ for(i in seq_along(stream_list)){
   cat("\n\n")
   cat(paste0("<h1>Historic (", yr_start, " to ", yr_prev, ") vs. Current (", yr_current, ") Field Measurements</h1>\n\n"))
 
-  field_plot_fun(scode = sitecode, yrcurrent = yr_current, yrstart = yr_start, yrprev = yr_prev)
+  field_plot_fun(scode = streamcode, yrcurrent = yr_current, yrstart = yr_start, yrprev = yr_prev)
   
   cat(paste0(
   "<p>",
@@ -363,7 +365,7 @@ for(i in seq_along(stream_list)){
   
   cat(paste0("<h1>Historic (", yr_start, " to ", yr_prev, ") vs. Current (", yr_current, ") Lab Chemistry</h1>\n\n"))
 
-  lab_plot_fun(scode = sitecode, yrcurrent = yr_current, yrstart = yr_start, yrprev = yr_prev)
+  lab_plot_fun(scode = streamcode, yrcurrent = yr_current, yrstart = yr_start, yrprev = yr_prev)
   
   cat(paste0(
   "<p>",
@@ -384,7 +386,7 @@ for(i in seq_along(stream_list)){
   cat("\n\n")
   cat(paste0("<h1>Trends in Field Measurements (", yr_start, " to ", yr_current, ")</h1>\n\n"))
   cat("\n\n")
-  ps_f <- plotTrend(site = sitecode, years = yr_start:yr_current, span = 0.9, 
+  ps_f <- plotTrend(site = streamcode, years = yr_start:yr_current, span = 0.9, 
                     parameter = field_params, palette = "#5AA7D7", legend_position = 'bottom')
   print(ps_f)
   cat("\n\n")
@@ -396,7 +398,7 @@ for(i in seq_along(stream_list)){
 
   cat(paste0("<h1>Trends in Lab Chemistry (", yr_start, " to ", yr_current, ")</h1>\n\n"))
   cat("\n\n")
-  ps_l <- plotTrend(site = sitecode, years = yr_start:yr_current, span = 0.9, 
+  ps_l <- plotTrend(site = streamcode, years = yr_start:yr_current, span = 0.9, 
                     parameter = lab_params, palette = "#5AA7D7", legend_position = "bottom")
 
   print(ps_l)
@@ -415,7 +417,7 @@ for(i in seq_along(stream_list)){
 for(i in seq_along(stream_list)){
   streamcode <- stream_list[[i]]
   sitename <- site_df$SiteName[site_df$SiteCode==streamcode]
-  sitecode <- site_df$SiteCode[site_df$SiteCode==streamcode]
+  #sitecode <- site_df$SiteCode[site_df$SiteCode==streamcode]
   yr_current <- site_df$year[site_df$SiteCode==streamcode]
   yr_prev <- yr_current - 1
   
@@ -425,7 +427,7 @@ for(i in seq_along(stream_list)){
   cat("\n\n")
   cat("<h1>Discharge vs. Precipitation</h1>")
   cat("\n\n")
-  p_dis <- plotPrecipDischarge(site = sitecode, years = yr_current, palette = c("#5AA7D7", "black"))
+  p_dis <- plotPrecipDischarge(site = streamcode, years = yr_current, palette = c("#5AA7D7", "black"))
   print(p_dis)
   cat("\n\n")
   cat(paste0("<p>Monthly discharge vs. Daily precipitation for ", yr_current, 
@@ -436,7 +438,7 @@ for(i in seq_along(stream_list)){
   cat("\n\n")
   cat("<h1>Discharge</h1>")
   cat("\n\n")
-  p_dist <- plotTrend(park = parkcode, site = sitecode, years = yr_start:yr_current, parameter = "Discharge_cfs", 
+  p_dist <- plotTrend(park = parkcode, site = streamcode, years = yr_start:yr_current, parameter = "Discharge_cfs", 
             gridlines = "grid_x", months = 5:10, threshold = F, span = 0.9)
   print(p_dist)
   cat("\n\n")
@@ -491,8 +493,8 @@ ESRINatGeo <- "http://services.arcgisonline.com/arcgis/rest/services/NatGeo_Worl
 bbox <- read.csv("boundboxes.csv") #lat/long coordinates and zoom level for each park 
 
 # Find center coordinates of park box
-long_cent <- mean(c(bbox$LongE[bbox$ParkCode == park], bbox$LongW[bbox$ParkCode == park]))
-lat_cent <- mean(c(bbox$LatN[bbox$ParkCode == park], bbox$LatS[bbox$ParkCode == park]))
+long_cent <- -68.297 # mean(c(bbox$LongE[bbox$ParkCode == park], bbox$LongW[bbox$ParkCode == park]))
+lat_cent <- 44.332 # mean(c(bbox$LatN[bbox$ParkCode == park], bbox$LatS[bbox$ParkCode == park]))
 
 # Compile water sites dataframe with codes, names, lat/long coordinates, and site type
 water_sites1 <- getSites(park = park)[,c("SiteCode", "SiteName", "SiteLatitude", "SiteLongitude",
@@ -562,7 +564,7 @@ leaflet(height = 700) %>%
     addTiles(group="Imagery", urlTemplate = ESRIimagery) %>%
     addTiles(group="Topo", urlTemplate = ESRItopo) %>%
     # add button to control map tiles
-    addLayersControl(map = ., baseGroups = c("Map","Imagery","Topo", "NatGeo"),
+    addLayersControl(map = ., baseGroups = c("NatGeo", "Imagery", "Topo"),
                      options = layersControlOptions(collapsed=T)) %>%
     # add site markers 
     addAwesomeMarkers(data = water_sites, ~SiteLongitude, ~SiteLatitude, 

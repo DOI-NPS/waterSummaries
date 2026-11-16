@@ -54,7 +54,7 @@ lab_plot_fun <- function(scode, yrcurrent, yrstart, yrprev){
   
   wbp_plot <- 
     if(is.null(wbplot_ANC) & is.null(wbplot_ChlA) & is.null(wbplot_TN) & is.null(wbplot_TP)){
-      paste0("No data for site = ", sitecode, " and year_current = ", yr_current, ".")
+      paste0("No data for site = ", scode, " and year_current = ", yr_current, ".")
     } else if(!is.null(wbplot_ANC) & !is.null(wbplot_ChlA)){
       grid.arrange(wbplot_TN, wbplot_TP, wbplot_ANC, wbplot_ChlA, legg,
                    layout_matrix = rbind(c(1, 2),
